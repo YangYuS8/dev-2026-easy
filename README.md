@@ -1,19 +1,17 @@
-# FastAPI + PostgreSQL 任务服务考核起始仓库
+# FastAPI + PostgreSQL 任务服务练习仓库（Easy）
 
 ## 项目简介
 
-这是一个用于工程化与 AI 协同开发考核的起始仓库，主题是 `FastAPI + PostgreSQL` 任务服务。
+这是一个面向初学者的后端练习仓库，主题是 `FastAPI + PostgreSQL` 的任务服务。
 
-仓库当前是半成品状态，不是完整标准答案。你需要阅读文档、启动项目、定位问题、补全功能，并以 Pull Request 形式提交结果。
+这个仓库不是完整成品，而是一个带有少量缺口的练习项目。你需要阅读说明、尝试运行项目、定位问题，并完成至少一个真实修复。
 
 ## 技术栈
 
 - Python 3.11+
 - FastAPI
 - PostgreSQL
-- psycopg
-- Docker
-- Docker Compose
+- Docker / Docker Compose
 - pytest
 
 ## 目录结构
@@ -21,30 +19,33 @@
 ```text
 .
 ├── app/
-│   ├── api/
-│   ├── config.py
-│   ├── crud.py
-│   ├── db.py
-│   ├── main.py
-│   ├── models.py
-│   └── schemas.py
 ├── docs/
-│   └── overview.md
 ├── tests/
-│   ├── conftest.py
-│   ├── test_health.py
-│   ├── test_schemas.py
-│   └── test_tasks.py
 ├── .env.example
-├── Dockerfile
-├── TASK.md
-├── ai-usage.md
 ├── docker-compose.yml
+├── TASK.md
 ├── report.md
-└── requirements.txt
+├── ai-usage.md
+└── README.md
 ```
 
-## 本地运行方式
+## 推荐完成顺序
+
+1. 先看 `TASK.md`
+2. 再看 `docker-compose.yml`
+3. 再看 `.env.example`
+4. 最后看 `app/` 和 `tests/`
+
+## 启动方式
+
+### 方式一：Docker Compose（推荐）
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+### 方式二：本地运行
 
 ```bash
 python -m venv .venv
@@ -54,69 +55,31 @@ cp .env.example .env
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-说明：本地运行前请先确认 PostgreSQL 可连接，以及 `.env` 中的配置与本机环境一致。
+如果你的本机环境暂时不完整，也没关系。你可以先记录遇到的问题，再尝试修复。
 
-## Docker Compose 运行方式
+## 可以怎么验证
+
+例如：
 
 ```bash
-cp .env.example .env
-docker compose up --build
+pytest
+curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8000/tasks
 ```
 
-说明：考核要求中明确需要使用 `Docker Compose` 方式完成一次启动与排查。
-
-## API 概览
+## 主要接口
 
 - `GET /health`
 - `GET /tasks`
 - `POST /tasks`
 - `PATCH /tasks/{task_id}/status`
 
-任务接口当前以 `tasks` 列表和单个 task 对象为主；`/health` 仍保留较简单的返回结构。
+## 这份 easy 版本的目标
 
-当前任务状态字段使用以下取值：`pending`、`in_progress`、`done`。
+这份仓库主要希望你练习：
 
-## 建议先看哪些文件
-
-1. `TASK.md`
-2. `docs/overview.md`
-3. `docker-compose.yml`
-4. `.env.example`
-5. `app/config.py`
-6. `app/main.py`
-7. `tests/test_tasks.py`
-
-## 排查提示
-
-这是一个用于考核的半成品仓库，问题不一定只出现在 Python 代码中。
-
-排查时建议同时关注以下几个方面：
-
-- 文档说明是否和当前实现一致
-- 环境变量模板是否覆盖了运行所需配置
-- `Docker Compose` 配置是否和服务实际依赖一致
-- 应用默认值是否和当前运行环境匹配
-- 数据库连接相关配置是否前后一致
-- 启动日志、报错信息和测试输出是否给出了直接线索
-
-请注意，文档、配置文件和代码默认值之间可能并不是完全一致的。建议交叉阅读 `TASK.md`、`docker-compose.yml`、`.env.example`、`app/config.py`、测试文件以及启动日志，再做判断。
-
-## Half-Finished Assessment Note
-
-这是一个故意保留部分缺口的半成品 assessment starter。
-
-- 有些配置或启动细节需要你自己检查
-- 有些 Python 行为还不完整
-- 测试只覆盖基础路径，不覆盖所有待修复点
-
-请把它当成“接手他人半成品仓库”的练习，而不是从零创建项目。
-
-## Existing Issues / Features Note
-
-当前仓库已经具备基础任务列表、任务创建、状态更新、健康检查等能力，但仍存在若干待确认问题与待完成功能。
-
-- 现有实现可以帮助你快速理解项目结构
-- 文档不会直接写出所有需要修改的点
-- 你需要自己定位至少部分环境、配置或代码问题
-
-正式要求、提交方式和验收内容请查看 `TASK.md`。
+- 阅读项目说明
+- 尝试启动项目
+- 看懂报错
+- 完成至少一个真实修复
+- 记录自己的排查过程
