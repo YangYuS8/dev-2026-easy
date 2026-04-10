@@ -29,8 +29,7 @@
 │   ├── models.py
 │   └── schemas.py
 ├── docs/
-│   ├── overview.md
-│   └── superpowers/
+│   └── overview.md
 ├── tests/
 │   ├── conftest.py
 │   ├── test_health.py
@@ -81,14 +80,30 @@ docker compose up --build
 
 1. `TASK.md`
 2. `docs/overview.md`
-3. `app/main.py`
-4. `app/api/tasks.py`
+3. `docker-compose.yml`
+4. `.env.example`
 5. `app/config.py`
-6. `tests/test_tasks.py`
+6. `app/main.py`
+7. `tests/test_tasks.py`
+
+## 排查提示
+
+这是一个用于考核的半成品仓库，问题不一定只出现在 Python 代码中。
+
+排查时建议同时关注以下几个方面：
+
+- 文档说明是否和当前实现一致
+- 环境变量模板是否覆盖了运行所需配置
+- `Docker Compose` 配置是否和服务实际依赖一致
+- 应用默认值是否和当前运行环境匹配
+- 数据库连接相关配置是否前后一致
+- 启动日志、报错信息和测试输出是否给出了直接线索
+
+请注意，文档、配置文件和代码默认值之间可能并不是完全一致的。建议交叉阅读 `TASK.md`、`docker-compose.yml`、`.env.example`、`app/config.py`、测试文件以及启动日志，再做判断。
 
 ## Half-Finished Assessment Note
 
-这是一个故意保留部分缺口的 assessment starter。
+这是一个故意保留部分缺口的半成品 assessment starter。
 
 - 有些配置或启动细节需要你自己检查
 - 有些 Python 行为还不完整
