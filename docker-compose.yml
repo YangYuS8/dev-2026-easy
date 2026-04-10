@@ -1,39 +1,14 @@
 services:
   api:
     build: .
-    container_name: assessment-task-api
+    container_name: assessment-task-api-easy
     env_file:
       - .env
     environment:
       APP_HOST: ${APP_HOST:-0.0.0.0}
       APP_PORT: ${APP_PORT:-8000}
-      POSTGRES_USER: ${POSTGRES_USER:-task_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-task_password}
-      DATABASE_HOST: postgres
-      DATABASE_PORT: ${DATABASE_PORT:-5432}
-      DATABASE_NAME: ${DATABASE_NAME:-task_service}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./tasks.db}
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: postgres:16
-    container_name: assessment-task-db
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME:-task_service}
-      POSTGRES_USER: ${POSTGRES_USER:-task_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-task_password}
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-task_user} -d ${DATABASE_NAME:-task_service}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-volumes:
-  postgres_data:
+      - ./:/app

@@ -1,61 +1,50 @@
-import psycopg
-from psycopg.rows import class_row
+import sqlite3
+from datetime import datetime, timezone
 
 from app.models import Task
 
 
-def list_tasks(connection: psycopg.Connection) -> list[Task]:
-    with connection.cursor(row_factory=class_row(Task)) as cursor:
-        cursor.execute(
-            """
-            SELECT id, title, description, status, created_at, updated_at
-            FROM tasks
-            ORDER BY id ASC
-            """
-        )
-        return list(cursor.fetchall())
+def _to_task(row: sqlite3.Row) -> Task:
+    return Task(
+        id=row["id"],
+        title=row["title"],
+        description=row["description"],
+        status=row["status"],
+        created_at=datetime.fromisoformat(row["created_at"]),
+        updated_at=datetime.fromisoformat(row["updated_at"]),
+    )
 
 
-def create_task(
-    connection: psycopg.Connection,
-    *,
-    title: str,
-    description: str | None,
-) -> Task:
-    with connection.cursor(row_factory=class_row(Task)) as cursor:
-        cursor.execute(
-            """
-            INSERT INTO tasks (title, description)
-            VALUES (%s, %s)
-            RETURNING id, title, description, status, created_at, updated_at
-            """,
-            (title, description),
-        )
-        task = cursor.fetchone()
+def list_tasks(connection: sqlite3.Connection) -> list[Task]:
+    rows = connection.execute(
+        "SELECT id, title, description, status, created_at, updated_at FROM tasks ORDER BY id ASC"
+    ).fetchall()
+    return [_to_task(row) for row in rows]
 
+
+def create_task(connection: sqlite3.Connection, *, title: str, description: str | None) -> Task:
+    now = datetime.now(timezone.utc).isoformat()
+    cursor = connection.execute(
+        "INSERT INTO tasks (title, description, status, created_at, updated_at) VALUES (?, ?, 'pending', ?, ?)",
+        (title, description, now, now),
+    )
     connection.commit()
-    if task is None:
-        raise RuntimeError("Failed to create task")
-    return task
+    row = connection.execute(
+        "SELECT id, title, description, status, created_at, updated_at FROM tasks WHERE id = ?",
+        (cursor.lastrowid,),
+    ).fetchone()
+    return _to_task(row)
 
 
-def update_task_status(
-    connection: psycopg.Connection,
-    *,
-    task_id: int,
-    status: str,
-) -> Task | None:
-    with connection.cursor(row_factory=class_row(Task)) as cursor:
-        cursor.execute(
-            """
-            UPDATE tasks
-            SET status = %s, updated_at = NOW()
-            WHERE id = %s
-            RETURNING id, title, description, status, created_at, updated_at
-            """,
-            (status, task_id),
-        )
-        task = cursor.fetchone()
-
+def update_task_status(connection: sqlite3.Connection, *, task_id: int, status: str) -> Task | None:
+    now = datetime.now(timezone.utc).isoformat()
+    connection.execute(
+        "UPDATE tasks SET status = ?, updated_at = ? WHERE id = ?",
+        (status, now, task_id),
+    )
     connection.commit()
-    return task
+    row = connection.execute(
+        "SELECT id, title, description, status, created_at, updated_at FROM tasks WHERE id = ?",
+        (task_id,),
+    ).fetchone()
+    return _to_task(row) if row else None

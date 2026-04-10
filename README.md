@@ -1,51 +1,29 @@
-# FastAPI + PostgreSQL 任务服务练习仓库（Easy）
+# FastAPI 任务服务练习仓库（Easy Beginner）
 
 ## 项目简介
 
-这是一个面向初学者的后端练习仓库，主题是 `FastAPI + PostgreSQL` 的任务服务。
+这是一个更适合初学者的后端练习仓库，主题是一个基于 `FastAPI + SQLite` 的任务服务。
 
-这个仓库不是完整成品，而是一个带有少量缺口的练习项目。你需要阅读说明、尝试运行项目、定位问题，并完成至少一个真实修复。
+这个仓库不是完整成品，而是一个保留了少量缺口的练习项目。你需要阅读说明、尝试运行项目、定位问题，并完成至少一个真实修复。
 
 ## 技术栈
 
 - Python 3.11+
 - FastAPI
-- PostgreSQL
-- Docker / Docker Compose
+- SQLite
 - pytest
-
-## 目录结构
-
-```text
-.
-├── app/
-├── docs/
-├── tests/
-├── .env.example
-├── docker-compose.yml
-├── TASK.md
-├── report.md
-├── ai-usage.md
-└── README.md
-```
+- Docker Compose（可选）
 
 ## 推荐完成顺序
 
 1. 先看 `TASK.md`
-2. 再看 `docker-compose.yml`
-3. 再看 `.env.example`
-4. 最后看 `app/` 和 `tests/`
+2. 再看 `.env.example`
+3. 再看 `app/` 和 `tests/`
+4. 最后尝试运行项目
 
 ## 启动方式
 
-### 方式一：Docker Compose（推荐）
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-### 方式二：本地运行
+### 方式一：本地运行（推荐）
 
 ```bash
 python -m venv .venv
@@ -55,11 +33,14 @@ cp .env.example .env
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-如果你的本机环境暂时不完整，也没关系。你可以先记录遇到的问题，再尝试修复。
+### 方式二：Docker Compose（可选）
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
 ## 可以怎么验证
-
-例如：
 
 ```bash
 pytest
@@ -74,12 +55,10 @@ curl http://127.0.0.1:8000/tasks
 - `POST /tasks`
 - `PATCH /tasks/{task_id}/status`
 
-## 这份 easy 版本的目标
+## 这份版本主要考察什么
 
-这份仓库主要希望你练习：
-
-- 阅读项目说明
-- 尝试启动项目
-- 看懂报错
-- 完成至少一个真实修复
-- 记录自己的排查过程
+- 会不会阅读项目说明
+- 会不会运行一个 Python 项目
+- 会不会看懂报错
+- 会不会完成至少一个真实修复
+- 会不会记录自己做了什么
